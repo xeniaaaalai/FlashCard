@@ -6,7 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		94EDDDD72E23EE9200D5F796 /* UserStory.md in Resources */ = {isa = PBXBuildFile; fileRef = 94EDDDD52E23EE9200D5F796 /* UserStory.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		94EDDDD52E23EE9200D5F796 /* UserStory.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = UserStory.md; sourceTree = "<group>"; };
 		F1431F0E2E1AB8B3002AA362 /* FlashCard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlashCard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -29,9 +34,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		94EDDDD62E23EE9200D5F796 /* Docs */ = {
+			isa = PBXGroup;
+			children = (
+				94EDDDD52E23EE9200D5F796 /* UserStory.md */,
+			);
+			path = Docs;
+			sourceTree = "<group>";
+		};
 		F1431F052E1AB8B3002AA362 = {
 			isa = PBXGroup;
 			children = (
+				94EDDDD62E23EE9200D5F796 /* Docs */,
 				F1431F102E1AB8B3002AA362 /* FlashCard */,
 				F1431F0F2E1AB8B3002AA362 /* Products */,
 			);
@@ -109,6 +123,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94EDDDD72E23EE9200D5F796 /* UserStory.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -251,6 +266,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = X3V5T2R48U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -278,6 +294,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = X3V5T2R48U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
