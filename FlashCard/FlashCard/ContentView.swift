@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
+import Foundation
 
-struct Word: Identifiable, Codable {
+struct Word: Identifiable, Codable, Equatable {
     let id = UUID()
     let english: String
     let chinese: String
@@ -16,9 +17,15 @@ struct Word: Identifiable, Codable {
 class WordStore: ObservableObject {
     @Published var words: [Word] = []
     
+    init() {
+        load()
+    }
+    
     func add(word: Word) {
-        words.append(word)
-        save()
+        if !words.contains(where: { $0.english.lowercased() == word.english.lowercased() }) {
+            words.append(word)
+            save()
+        }
     }
     
     func save() {
@@ -39,7 +46,9 @@ struct ContentView: View {
     @StateObject var store = WordStore()
     @State private var englishInput = ""
     @State private var chineseResult = ""
-    @State private var showQuiz = false
+    @State private var showSavePrompt = false
+    @State private var errorMessage = ""
+    @State private var showFlashCard = false
     
     var body: some View {
         NavigationView {
@@ -53,21 +62,19 @@ struct ContentView: View {
                 }
                 .padding()
                 
-                Text("中文翻譯：\(chineseResult)")
-                    .padding()
-                
-                Button("儲存") {
-                    if !englishInput.isEmpty && !chineseResult.isEmpty {
-                        let word = Word(english: englishInput, chinese: chineseResult)
-                        store.add(word: word)
-                        englishInput = ""
-                        chineseResult = ""
-                    }
+                if !chineseResult.isEmpty {
+                    Text("中文翻譯：\(chineseResult)")
+                        .padding()
                 }
-                .padding()
                 
-                Button("抽考") {
-                    showQuiz = true
+                if !errorMessage.isEmpty {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                        .padding()
+                }
+                
+                Button("單字卡抽考") {
+                    showFlashCard = true
                 }
                 .padding()
                 
@@ -79,59 +86,123 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("背單字 App")
-            .onAppear {
-                store.load()
+            .sheet(isPresented: $showSavePrompt) {
+                SavePromptView(word: Word(english: englishInput, chinese: chineseResult), store: store)
             }
-            .sheet(isPresented: $showQuiz) {
-                QuizView(words: store.words)
+            .sheet(isPresented: $showFlashCard) {
+                FlashCardView(words: store.words)
             }
         }
     }
     
     func queryWord() {
-        // 這裡應該連接 API 查詢英文單字的中文翻譯
-        // 範例: 使用假資料
-        chineseResult = "（這裡顯示查詢結果，實際應由API取得）"
-        // 例如: callAPI(englishInput) { result in chineseResult = result }
+        errorMessage = ""
+        chineseResult = ""
+        guard !englishInput.isEmpty else {
+            errorMessage = "請輸入英文單字"
+            return
+        }
+        // 串接 LibreTranslate API
+        let url = URL(string: "https://libretranslate.com/translate")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        let params = [
+            "q": englishInput,
+            "source": "en",
+            "target": "zh",
+            "format": "text"
+        ]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: params)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                DispatchQueue.main.async {
+                    errorMessage = "查詢失敗: \(error.localizedDescription)"
+                }
+                return
+            }
+            guard let data = data,
+                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                  let translated = json["translatedText"] as? String else {
+                DispatchQueue.main.async {
+                    errorMessage = "查無翻譯結果"
+                }
+                return
+            }
+            DispatchQueue.main.async {
+                chineseResult = translated
+                showSavePrompt = true
+            }
+        }.resume()
     }
 }
 
-struct QuizView: View {
-    let words: [Word]
-    @State private var currentIndex = 0
-    @State private var userAnswer = ""
-    @State private var showResult = false
-    @State private var isCorrect = false
+struct SavePromptView: View {
+    let word: Word
+    @ObservedObject var store: WordStore
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         VStack(spacing: 20) {
+            Text("是否儲存？")
+            Text("\(word.english) - \(word.chinese)")
+            Button("儲存") {
+                store.add(word: word)
+                dismiss()
+            }
+            Button("取消") {
+                dismiss()
+            }
+        }
+        .padding()
+    }
+}
+
+struct FlashCardView: View {
+    let words: [Word]
+    @State private var currentIndex: Int = 0
+    @State private var showChinese = false
+    
+    var body: some View {
+        VStack(spacing: 30) {
             if words.isEmpty {
                 Text("尚未儲存任何單字")
             } else {
-                Text("請輸入「\(words[currentIndex].english)」的中文翻譯")
-                TextField("你的答案", text: $userAnswer)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
-                
-                Button("提交") {
-                    isCorrect = userAnswer == words[currentIndex].chinese
-                    showResult = true
-                }
-                .padding()
-                
-                if showResult {
-                    Text(isCorrect ? "答對了！" : "答錯了，正確答案是：\(words[currentIndex].chinese)")
-                        .foregroundColor(isCorrect ? .green : .red)
-                    Button("下一題") {
-                        userAnswer = ""
-                        showResult = false
-                        currentIndex = (currentIndex + 1) % words.count
+                ZStack {
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color.blue.opacity(0.2))
+                        .frame(height: 200)
+                        .shadow(radius: 5)
+                    
+                    VStack {
+                        Text(showChinese ? words[currentIndex].chinese : words[currentIndex].english)
+                            .font(.largeTitle)
+                            .bold()
+                            .padding()
+                        Button(showChinese ? "顯示英文" : "顯示中文") {
+                            withAnimation {
+                                showChinese.toggle()
+                            }
+                        }
                     }
-                    .padding()
+                }
+                Button("抽下一張") {
+                    var newIndex: Int
+                    repeat {
+                        newIndex = Int.random(in: 0..<words.count)
+                    } while newIndex == currentIndex && words.count > 1
+                    currentIndex = newIndex
+                    showChinese = false
                 }
             }
         }
         .padding()
+        .onAppear {
+            if !words.isEmpty {
+                currentIndex = Int.random(in: 0..<words.count)
+            }
+        }
     }
 }
 

@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		948AEDC62E2D2991003186BE /* UpdateHistory.md in Resources */ = {isa = PBXBuildFile; fileRef = 948AEDC52E2D2990003186BE /* UpdateHistory.md */; };
 		94EDDDD72E23EE9200D5F796 /* UserStory.md in Resources */ = {isa = PBXBuildFile; fileRef = 94EDDDD52E23EE9200D5F796 /* UserStory.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		948AEDC52E2D2990003186BE /* UpdateHistory.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = UpdateHistory.md; sourceTree = "<group>"; };
 		94EDDDD52E23EE9200D5F796 /* UserStory.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = UserStory.md; sourceTree = "<group>"; };
 		F1431F0E2E1AB8B3002AA362 /* FlashCard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlashCard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -38,6 +40,7 @@
 			isa = PBXGroup;
 			children = (
 				94EDDDD52E23EE9200D5F796 /* UserStory.md */,
+				948AEDC52E2D2990003186BE /* UpdateHistory.md */,
 			);
 			path = Docs;
 			sourceTree = "<group>";
@@ -123,6 +126,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				948AEDC62E2D2991003186BE /* UpdateHistory.md in Resources */,
 				94EDDDD72E23EE9200D5F796 /* UserStory.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -274,6 +278,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -302,6 +307,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
